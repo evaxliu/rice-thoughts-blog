@@ -1,0 +1,22 @@
+# robots.txt for ricethoughts.com
+
+User-agent: *
+Allow: /
+
+# Block sensitive or backend routes
+Disallow: /admin/
+Disallow: /login/
+Disallow: /register/
+Disallow: /api/
+Disallow: /private/
+Disallow: /internal/
+Disallow: /tmp/
+Disallow: /*?preview=
+
+# Avoid duplicate parameter URLs
+Disallow: /*?page=
+Disallow: /*?ref=
+Disallow: /*?utm_*
+
+# Sitemap
+Sitemap: https://ricethoughts.com/sitemap.xml
