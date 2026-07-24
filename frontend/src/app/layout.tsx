@@ -4,7 +4,11 @@ import { ThemeProvider } from "next-themes";
 import NavBar from "./components/NavigationBar";
 
 export const metadata = {
-  title: "Rice Thoughts Blog",
+  metadataBase: new URL("https://ricethoughts.com"),
+  title: {
+    default: "Rice Thoughts Blog",
+    template: "%s — Rice Thoughts Blog",
+  },
   description: "A guy who likes rice and thinks. An essay on food, society and politics.",
   icons: {
     icon: [
