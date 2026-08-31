@@ -4,38 +4,19 @@ import React from "react";
 import { Sun, Moon } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
+import { useTheme } from 'next-themes';
 import clsx from 'clsx';
 
 export default function NavBar() {
   const pathname = usePathname();
 
-  const [currentTheme, setTheme] = useState(getInitialTheme());
+  const { resolvedTheme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
-  useEffect(() => {
-    if (currentTheme === 'dark') {
-      document.documentElement.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
-    }
-    setMounted(true);
-  }, [currentTheme]);
-
-  function getInitialTheme() {
-    let userTheme = null;
-    let systemTheme = true;
-    if (typeof window !== 'undefined' && window.localStorage) {
-      userTheme = localStorage.getItem('theme');
-      systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    }
-
-    return userTheme || (systemTheme ? 'dark' : 'light');
-  }
+  useEffect(() => setMounted(true), []);
 
   function toggleTheme() {
-    setTheme(currentTheme === 'dark' ? 'light' : 'dark');
+    setTheme(resolvedTheme === 'dark' ? 'light' : 'dark');
   }
 
   const navTabs = [
@@ -45,53 +26,53 @@ export default function NavBar() {
   ];
 
   return(
-    <header className="sticky top-0 bg-white dark:bg-[#0f1117] border-b border-gray-200 dark:border-gray-800">
-      <div className="max-w-4xl mx-auto px-4 md:px-6 py-5">
-        <div className="flex items-center justify-between mb-3">
-          <Link
-            href={"/"}
-          >
-            <h1 className="select-none text-xl md:text-3xl tracking-tight dark:text-white">
+    <header className="sticky top-0 z-20 bg-canvas">
+      <div className="mx-auto w-full max-w-page px-4 sm:px-6 md:px-8">
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-4 py-4 sm:py-5 md:gap-x-5 md:py-6">
+          <Link href={"/"} className="min-w-0 md:mr-5">
+            <span className="block truncate font-serif text-xl text-ink sm:text-2xl md:text-3xl">
               Rice Thoughts Blog
-            </h1>
+            </span>
           </Link>
-          <div className="flex items-center gap-1 md:gap-2">
-            <button className="flex items-center" onClick={toggleTheme} aria-label="Toggle theme">
+
+          <nav className="order-10 flex basis-full items-center gap-5 text-sm sm:gap-6 md:order-none md:basis-auto md:gap-7">
+            {
+              navTabs.map((tab) => {
+                const active = pathname === tab.href;
+                return(
+                  <Link
+                    key={tab.label}
+                    href={tab.href}
+                    className={clsx(
+                      'whitespace-nowrap pb-1.5 transition-colors',
+                      active
+                        ? 'border-b-2 border-accent text-ink'
+                        : 'text-faint hover:text-ink',
+                    )}
+                  >
+                    {tab.label}
+                  </Link>
+                )
+              })
+            }
+          </nav>
+
+          <div className="ml-auto flex shrink-0 items-center gap-2 md:gap-3">
+            <button
+              className="flex items-center p-1 text-faint transition-colors hover:text-ink"
+              onClick={toggleTheme}
+              aria-label="Toggle theme"
+            >
               {!mounted ? (
-                <span className="inline-block w-7.5 h-7.5" />
-              ) : currentTheme === "dark" ? (
-                <Sun width="30px" height="30px" />
+                <span className="inline-block size-5" />
+              ) : resolvedTheme === "dark" ? (
+                <Sun className="size-5" />
               ) : (
-                <Moon width="30px" height="30px" />
+                <Moon className="size-5" />
               )}
-            </button>
-            <button className="select-none ml-1 px-3 md:px-4 py-1.5 text-xs md:text-sm bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-gray-700 dark:hover:bg-gray-100 transition-colors rounded-sm whitespace-nowrap">
-              Log In
             </button>
           </div>
         </div>
-        <nav className="flex gap-4 md:gap-6 text-sm">
-          {
-            navTabs.map((tab) => {
-              return(
-                <Link
-                  key={tab.label}
-                  href={tab.href}
-                  className={clsx(
-                    {
-                      'text-purple-400': pathname === tab.href,
-                    },
-                    'hover:text-purple-400 transition-colors whitespace-nowrap select-none',
-                  )}
-                >
-                  <p>
-                    {tab.label}
-                  </p>
-                </Link>
-              )
-            })
-          }
-        </nav>
       </div>
     </header>
   )

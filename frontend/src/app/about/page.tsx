@@ -1,6 +1,7 @@
 import Image from "next/image";
 import keng from "../../../public/Kengdoru.png";
 import lilac from "../../../public/LilacPlanet.png";
+import { Eyebrow, Page } from "../components/Postfeed";
 
 export default function About() {
   const featured = [
@@ -15,43 +16,53 @@ export default function About() {
       image: lilac,
       author: "Eva L",
       title: "Developer",
-      description: "",
+      description: "Builds and maintains the site.",
     },
   ];
 
   return (
-    <div className="max-w-4xl mx-auto px-4 md:px-6 py-5">
-      <ul>
-        {featured.map((person) => (
-          <li
-            key={person.author}
-            className="group block wrap-break-word py-6"
-          >
-            <div className="flex items-center gap-6">
+    <Page>
+      <main className="border-t border-line pt-8 md:pt-11">
+        <Eyebrow>ABOUT</Eyebrow>
+        <h1 className="mt-4 font-serif text-3xl font-normal text-balance text-ink-strong sm:text-4xl md:text-display">
+          A guy who likes rice and thinks
+        </h1>
+        <p className="mt-6 text-base leading-relaxed text-muted md:text-lg">
+          Rice Thoughts is an independent blog about food, society and politics, and the
+          places where the three run into each other.
+        </p>
+        <p className="mt-4 text-base leading-relaxed text-muted md:text-lg">
+          Most weeks that means an essay. Some weeks it means a food review, because
+          restaurants are politics too, and because we have to eat.
+        </p>
+
+        <ul className="mt-10 border-t border-line-soft">
+          {featured.map((person) => (
+            <li
+              key={person.author}
+              className="flex items-center gap-4 border-b border-line-soft py-6 sm:gap-5"
+            >
               <Image
-                className="h-30 w-30 shrink-0 rounded-full object-contain"
+                className="size-14 shrink-0 rounded-full object-contain sm:size-16"
                 width={120}
                 height={120}
                 src={person.image}
                 alt={person.author}
                 priority
               />
-
-              <div>
-                <h2 className="font-sans text-2xl font-semibold tracking-tight text-black dark:text-[#f8fafc] md:text-3xl">
-                  {person.author} - {person.title}
-                </h2>
-
+              <div className="min-w-0">
+                <div className="font-serif text-lg text-ink sm:text-xl">{person.author}</div>
+                <div className="mt-1 text-sm text-faint">{person.title}</div>
                 {person.description && (
-                  <p className="mt-3 leading-relaxed text-black dark:text-[#f8fafc] md:text-lg">
+                  <p className="mt-2 text-sm leading-normal text-muted sm:text-base">
                     {person.description}
                   </p>
                 )}
               </div>
-            </div>
-          </li>
-        ))}
-      </ul>
-    </div>
+            </li>
+          ))}
+        </ul>
+      </main>
+    </Page>
   );
 }

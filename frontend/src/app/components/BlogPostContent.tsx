@@ -3,6 +3,7 @@ import { GetPostResult } from "@/src/lib/wisp";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import sanitize, { defaults } from "sanitize-html";
+import { Eyebrow, Meta, Page, formatDate } from "./Postfeed";
 
 type RecArticle = {
   id: string;
@@ -59,6 +60,11 @@ export const PostContent = ({ content }: { content: string }) => {
   );
 };
 
+function readingTime(html: string) {
+  const words = html.replace(/<[^>]*>/g, " ").split(/\s+/).filter(Boolean).length;
+  return `${Math.max(1, Math.round(words / 200))} min read`;
+}
+
 export const BlogPostContent = (props: { post: GetPostResult["post"]; slug: string; }) => {
   const post = props.post
   const slug = props.slug
@@ -79,63 +85,75 @@ export const BlogPostContent = (props: { post: GetPostResult["post"]; slug: stri
   const { title, content, tags } = post;
 
   return (
-    <div className="max-w-4xl mx-auto px-4 md:px-6 py-8 md:py-12">
-      <div className="
-        prose-neutral lg:prose-xl dark:prose-invert
-        leading-[1.8] text-[1.15rem]
-        text-gray-700 dark:text-gray-300
-        prose-h1:text-3xl lg:prose-h1:text-3xl
-        prose-headings:font-bold prose-headings:leading-[1.3]
-        prose-headings:text-gray-900 dark:prose-headings:text-[#f8fafc]
-        prose-p:mb-[1.35rem]
-        prose-p:text-gray-700 dark:prose-p:text-gray-300
-        prose-a:text-[#c084fc] prose-a:font-medium prose-a:underline prose-a:underline-offset-[3px]
-        prose-code:bg-gray-100 dark:prose-code:bg-[#1f2330]
-        prose-code:text-gray-900 dark:prose-code:text-[#f8fafc]
-        prose-code:px-[0.45em] prose-code:py-[0.25em] prose-code:rounded
-        prose-blockquote:border-l-[#c084fc]
-        prose-blockquote:text-gray-700 dark:prose-blockquote:text-gray-300
-        prose-blockquote:italic
-        mb-10 wrap-break-word
-      ">
-        <h1>{title}</h1>
+    <Page>
+      <article className="border-t border-line pt-8 md:pt-10">
+        <Eyebrow>{(tags[0]?.name ?? "Article").toUpperCase()}</Eyebrow>
 
-        <div className="text-sm mt-4 text-gray-700 dark:text-gray-300">
-          {Intl.DateTimeFormat("en-US", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          }).format(new Date(post.publishedAt || post.createdAt))}
-        </div>
-        
-        <div className="text-sm mt-4">
-          {tags.map((tag) => (
-            <span
-              key={tag.id}
-              className="rounded-md bg-[#2d2444] px-2 py-1 text-[#d8b4fe] mr-2"
-            >
-              {tag.name}
-            </span>
-          ))}
-        </div>
-        
-        <PostContent content={content} />
+        <h1 className="mt-4 font-serif text-3xl font-normal text-pretty text-ink-strong sm:text-4xl md:text-display">
+          {title}
+        </h1>
 
-        <h4>
-          Similar Articles
-        </h4>
-        {
-          recs.map((rec) => (
-            <Link
-              key={rec.id}
-              href={rec.slug}
-              className="text-primary mr-2"
-            >
-              {rec.title}
-            </Link>
-          ))
-        }
-      </div>
-    </div>
+        {post.description && (
+          <p className="mt-4 text-base leading-relaxed text-pretty text-muted sm:text-lg">
+            {post.description}
+          </p>
+        )}
+
+        <Meta
+          className="mt-6"
+          parts={[
+            formatDate(post.publishedAt || post.createdAt),
+            readingTime(content),
+            ...tags.map((tag) => tag.name),
+          ]}
+        />
+
+        <div className="
+          mt-9 wrap-break-word text-base leading-body text-body sm:text-lg
+          prose-headings:font-serif prose-headings:font-normal prose-headings:leading-tight
+          prose-headings:text-ink-strong
+          prose-h1:mt-10 prose-h1:mb-0 prose-h1:text-2xl md:prose-h1:text-3xl
+          prose-h2:mt-10 prose-h2:mb-0 prose-h2:text-2xl md:prose-h2:text-3xl
+          prose-h3:mt-8 prose-h3:mb-0 prose-h3:text-xl md:prose-h3:text-2xl
+          prose-p:mt-6 prose-p:mb-0
+          prose-ul:mt-6 prose-ul:list-disc prose-ul:pl-6
+          prose-ol:mt-6 prose-ol:list-decimal prose-ol:pl-6
+          prose-li:mt-2
+          prose-a:text-accent-soft prose-a:underline prose-a:underline-offset-2
+          prose-strong:text-ink
+          prose-img:mt-8 prose-img:h-auto prose-img:max-w-full
+          prose-code:rounded prose-code:bg-line-soft prose-code:px-1.5 prose-code:py-0.5
+          prose-code:text-ink
+          prose-pre:mt-6 prose-pre:overflow-x-auto prose-pre:bg-line-soft prose-pre:p-4
+          [&_pre_code]:bg-transparent [&_pre_code]:p-0
+          prose-blockquote:mt-8 prose-blockquote:border-l-2 prose-blockquote:border-accent
+          prose-blockquote:pl-6 prose-blockquote:font-serif prose-blockquote:leading-snug
+          prose-blockquote:text-ink-strong prose-blockquote:text-xl md:prose-blockquote:text-2xl
+          [&_table]:mt-6 [&_table]:block [&_table]:w-full [&_table]:overflow-x-auto
+          [&_iframe]:mt-6 [&_iframe]:max-w-full
+        ">
+          <PostContent content={content} />
+        </div>
+
+        {recs.length > 0 && (
+          <section className="mt-12 md:mt-14">
+            <div className="border-b border-line pb-4">
+              <Eyebrow>KEEP READING</Eyebrow>
+            </div>
+            {recs.map((rec) => (
+              <Link
+                key={rec.id}
+                href={`/blog/${rec.slug}`}
+                className="block border-b border-line-soft py-5 last:border-b-0"
+              >
+                <div className="wrap-break-word font-serif text-lg leading-tight text-ink sm:text-xl">
+                  {rec.title}
+                </div>
+              </Link>
+            ))}
+          </section>
+        )}
+      </article>
+    </Page>
   );
 };

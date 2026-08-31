@@ -4,6 +4,87 @@
 
 @custom-variant dark (&:is(.dark *));
 
+:root {
+  --canvas: #fbfaf8;
+  --ink: #101013;
+  --ink-strong: #08080a;
+  --body: #36363c;
+  --muted: #45454b;
+  --faint: #55555a;
+  --eyebrow: #554e66;
+  --line: rgba(0, 0, 0, 0.18);
+  --line-soft: rgba(0, 0, 0, 0.12);
+  --accent: #5e9e82;
+  --accent-soft: #345748;
+}
+
+.dark {
+  --canvas: #0e1013;
+  --ink: #f7f6f4;
+  --ink-strong: #fbfaf8;
+  --body: #d8d8dd;
+  --muted: #b2b2b6;
+  --faint: #9d9da1;
+  --eyebrow: #a6a0b6;
+  --line: rgba(255, 255, 255, 0.16);
+  --line-soft: rgba(255, 255, 255, 0.11);
+  --accent: #5e9e82;
+  --accent-soft: #81b39e;
+}
+
+/* Ease the palette swap. Lives in @layer base so Tailwind's own transition
+   utilities (hover states) still win where they're applied. */
+@layer base {
+  *,
+  ::before,
+  ::after {
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+    transition-duration: 250ms;
+    transition-timing-function: ease;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    ::before,
+    ::after {
+      transition-duration: 0s;
+    }
+  }
+}
+
+@theme inline {
+  /* colors -> bg-canvas, text-ink, text-muted, border-line, ... */
+  --color-canvas: var(--canvas);
+  --color-ink: var(--ink);
+  --color-ink-strong: var(--ink-strong);
+  --color-body: var(--body);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-eyebrow: var(--eyebrow);
+  --color-line: var(--line);
+  --color-line-soft: var(--line-soft);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+}
+
+@theme {
+  --font-serif: Georgia, "Times New Roman", serif;
+
+  /* one width for the whole site -> max-w-page (704px) */
+  --container-page: 44rem;
+
+  /* sizes the default scale doesn't cover -> text-display, text-title, text-label */
+  --text-display: 2.75rem;
+  --text-display--line-height: 1.12;
+  --text-title: 1.625rem;
+  --text-title--line-height: 1.25;
+  --text-label: 0.6875rem;
+  --text-label--line-height: 1.2;
+
+  --tracking-label: 0.15em;
+  --leading-body: 1.75;
+}
+
 * {
   scrollbar-width: none;
   -ms-overflow-style: none;
