@@ -28,12 +28,11 @@ export default function About() {
           A guy who likes rice and thinks
         </h1>
         <p className="mt-6 text-base leading-relaxed text-muted md:text-lg">
-          Rice Thoughts is an independent blog about food, society and politics, and the
-          places where the three run into each other.
+          Rice Thoughts is an independent blog about food, society and politics.
         </p>
         <p className="mt-4 text-base leading-relaxed text-muted md:text-lg">
-          Most weeks that means an essay. Some weeks it means a food review, because
-          restaurants are politics too, and because we have to eat.
+          Some weeks that means an essay. Other weeks it means a food review, because
+          food is great.
         </p>
 
         <ul className="mt-10 border-t border-line-soft">
